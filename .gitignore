@@ -1,3 +1,4 @@
-idea/
-env
+.idea/
+.env
 coin.db
+/**/__pycache__/
