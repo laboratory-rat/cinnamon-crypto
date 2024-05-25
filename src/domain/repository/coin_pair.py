@@ -6,4 +6,4 @@ from src.domain.repository.base import Repository
 
 
 class CoinPairRepository(Repository[Type[CoinPair]], ABC):
-    pass
+    model_type: Type[CoinPair] = CoinPair

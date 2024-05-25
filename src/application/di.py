@@ -2,6 +2,8 @@ from injector import Module, singleton
 
 from src.application.service.candlestick_data import CandlestickDataService
 from src.application.service.coin_pair import CoinPairService
+from src.domain.repository.nn_model_metadata import NNModelMetadataRepository
+from src.domain.repository.nn_module import NNModuleRepository
 from src.infrastructure.config.app_config import AppConfig
 from src.domain.repository.candlestick_data import CandlestickDataRepository
 from src.domain.repository.coin import CoinRepository
@@ -14,6 +16,8 @@ from src.infrastructure.repository.alchemy.coin import AlchemyCoinRepository
 from src.infrastructure.repository.alchemy.coin_pair import AlchemyCoinPairRepository
 from src.infrastructure.repository.alchemy.coin_tag import AlchemyCoinTagRepository
 from src.infrastructure.repository.alchemy.engine import AlchemyEngine
+from src.infrastructure.repository.alchemy.nn_model_metadata import AlchemyNNModelMetadataRepository
+from src.infrastructure.repository.nn_module.file import FileNNModuleRepository
 
 
 class AppModule(Module):
@@ -31,10 +35,12 @@ class AppModule(Module):
 
         # repositories
         binder.bind(AlchemyEngine, AlchemyEngine)
-        binder.bind(CoinRepository, AlchemyCoinRepository, scope=singleton)
-        binder.bind(CoinTagRepository, AlchemyCoinTagRepository, scope=singleton)
-        binder.bind(CoinPairRepository, AlchemyCoinPairRepository, scope=singleton)
-        binder.bind(CandlestickDataRepository, AlchemyCandlestickDataRepository, scope=singleton)
+        binder.bind(CoinRepository, AlchemyCoinRepository)
+        binder.bind(CoinTagRepository, AlchemyCoinTagRepository)
+        binder.bind(CoinPairRepository, AlchemyCoinPairRepository)
+        binder.bind(CandlestickDataRepository, AlchemyCandlestickDataRepository)
+        binder.bind(NNModelMetadataRepository, AlchemyNNModelMetadataRepository)
+        binder.bind(NNModuleRepository, FileNNModuleRepository)
 
         # clients
         binder.bind(ClientBinance, ClientBinance, scope=singleton)

@@ -1,5 +1,6 @@
 import click
 from .pair import pair_command
+from .train import train_command
 
 
 @click.group()
@@ -15,4 +16,5 @@ def fetch_currencies_pairs(pair: str):
 
 
 cli.add_command(pair_command)
+cli.add_command(train_command)
 cli()

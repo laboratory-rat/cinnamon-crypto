@@ -2,11 +2,15 @@ from pydantic_settings import BaseSettings
 
 
 class DBSettings(BaseSettings):
-    NAME: str
+    name: str
 
     @property
     def connection_string(self):
-        return f'sqlite:///{self.NAME}'
+        return f'sqlite:///{self.name}'
+
+
+class NNSettings(BaseSettings):
+    path: str
 
 
 class AppConfig(BaseSettings):
@@ -15,6 +19,7 @@ class AppConfig(BaseSettings):
     api_client_test: bool = False
 
     database: DBSettings
+    nn: NNSettings
 
     class Config:
         env_file = '.env'

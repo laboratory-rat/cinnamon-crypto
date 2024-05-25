@@ -1,6 +1,6 @@
 import uuid
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Optional, List, Callable, Any, Literal
+from typing import TypeVar, Generic, Optional, List, Callable, Any, Literal, Type
 
 Entity = TypeVar('Entity')
 
@@ -58,6 +58,8 @@ class AppQuery(Generic[Entity]):
 
 
 class Repository(Generic[Entity], ABC):
+    model_type: Type[Entity]
+
     @abstractmethod
     def add(self, entity: Entity) -> Entity:
         pass

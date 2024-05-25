@@ -3,6 +3,7 @@ from typing import Literal, List
 
 from injector import inject
 
+from src.application.service.base import AppService
 from src.domain.model.candlestick_data import CandlestickData
 from src.domain.repository.candlestick_data import CandlestickDataRepository
 from src.domain.repository.coin_pair import CoinPairRepository
@@ -13,19 +14,34 @@ from src.infrastructure.client.binance_client import ClientBinance, ClientGetHis
 from src.infrastructure.logger.app_logger import AppLogger
 
 
-class CoinPairService:
+class CoinPairService(AppService):
     coin_pair_repository: CoinPairRepository
     candlestick_data_repository: CandlestickDataRepository
     client_binance: ClientBinance
-    logger: AppLogger
 
     @inject
     def __init__(self, coin_pair_repository: CoinPairRepository, candlestick_data_repository: CandlestickDataRepository,
                  client_binance: ClientBinance, logger: AppLogger):
+        super().__init__(logger)
         self.coin_pair_repository = coin_pair_repository
         self.candlestick_data_repository = candlestick_data_repository
         self.client_binance = client_binance
         self.logger = logger
+
+    def get_by_id(self, pair_id: uuid.UUID) -> CoinPairDisplaySchema:
+        """
+        get coin pair by id and return display schema
+
+        :param pair_id: uuid.UUID
+        :return: CoinPairDisplaySchema
+        :raises: NotFoundError
+        """
+
+        pair = self.coin_pair_repository.get(pair_id)
+        if not pair:
+            self.raise_not_found(self.coin_pair_repository.model_type, 'id', pair_id)
+
+        return CoinPairDisplaySchema.model_validate(pair)
 
     def fetch_coin_pair(self, pair_id: uuid.UUID, start_timestamp: float, end_timestamp: float,
                         period: Literal['1h', '1d', '30m'] = '1h', sleep=2000, limit=100):

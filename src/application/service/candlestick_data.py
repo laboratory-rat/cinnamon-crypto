@@ -3,20 +3,20 @@ from typing import List, Literal
 
 from injector import inject
 
+from src.application.service.base import AppService
 from src.domain.repository.base import AppQuery, AppFilter, AppOrder, AppPagination
 from src.domain.repository.candlestick_data import CandlestickDataRepository
 from src.domain.schema.candlestick_data import CandlestickDataSchema
 from src.infrastructure.logger.app_logger import AppLogger
 
 
-class CandlestickDataService:
+class CandlestickDataService(AppService):
     candlestick_data_repository: CandlestickDataRepository
-    logger: AppLogger
 
     @inject
     def __init__(self, candlestick_data_repository: CandlestickDataRepository, logger: AppLogger):
+        super().__init__(logger)
         self.candlestick_data_repository = candlestick_data_repository
-        self.logger = logger
 
     def count_by_coin_pair(self, coin_pair_id: uuid.UUID) -> int:
         return self.candlestick_data_repository.count(AppQuery(filters=[AppFilter.create(lambda x: x.coin_pair_id == coin_pair_id)]))
